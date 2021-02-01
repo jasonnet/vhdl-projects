@@ -8,7 +8,7 @@
 set projectName snickBlink
 
 # 0: setup project, 1: setup and compile project
-set compileProject 0
+set compileProject 1
 
 # 0: plain,  1: black,  2: blue, 3: one
 set target 3
