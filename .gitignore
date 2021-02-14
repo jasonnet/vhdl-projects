@@ -1,7 +1,3 @@
-.Xil/
-logs/
-xsim.dir/
-
 # We clean up files during script runs, but
 # gui runs can still generate files we want to 
 # ignore:
