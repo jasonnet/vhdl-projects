@@ -1,0 +1,8 @@
+project/
+src/design_1.bda
+src/design_1.bxml
+src/design_1_ooc.xdc
+src/hdl/
+src/ip/
+src/sim/
+src/synth/
