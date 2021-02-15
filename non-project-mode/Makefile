@@ -1,28 +1,20 @@
 
 # Makefile
 
-all: test_blink_one  module_fifo_regs_no_flags
-
-test_blink_one:  blink.vhd  tests/blink.one.tb.vhd
-	xvhdl $^                    --log logs/xvhdl.log
-	xelab $@  --debug typical   --log logs/xelab.log
-	xsim  $@ --R                --log logs/xsim.log   | bash tools/detect-error.sh
-	@echo To re-run in gui...
-	@echo "  " xsim $@  --gui
-	@mv *.jou  logs/
-	@mv *.pb   logs/
-	@rm *.wdb
+all: module_fifo_regs_no_flags module_fifo_regs_with_flags module_cluster
 
 
-module_fifo_regs_no_flags: src/module_fifo_regs_no_flags.vhd  src/module_fifo_regs_no_flags_tb.vhd
-	xvhdl $^                       --log logs/xvhdl.log
-	xelab $@_tb  --debug typical   --log logs/xelab.log
-	xsim  $@_tb --R                --log logs/xsim.log   | bash tools/detect-error.sh
-	@echo To re-run in gui...
-	@echo "  " xsim $@_tb  --gui
-	@mv *.jou  logs/
-	@mv *.pb   logs/
-	@rm *.wdb
+logs/module_cluster.done              : logs/%.done :  logs/module_fifo_regs_with_flags.done  src/%.vhd  src/%_tb.vhd  
+	tools/sim-it.sh  $(patsubst logs/%.done, %, $@)  $(filter %.vhd,$^)
+logs/module_fifo_regs_with_flags.done : logs/%.done :                                         src/%.vhd  src/%_tb.vhd  
+	tools/sim-it.sh  $(patsubst logs/%.done, %, $@)  $(filter %.vhd,$^)
+logs/module_fifo_regs_no_flags.done : logs/%.done :                                           src/%.vhd  src/%_tb.vhd  
+	tools/sim-it.sh  $(patsubst logs/%.done, %, $@)  $(filter %.vhd,$^)
+
+module_cluster              :  % : logs/%.done
+module_fifo_regs_with_flags :  % : logs/%.done
+module_fifo_regs_no_flags   :  % : logs/%.done
+
 	
 clean:
 	rm -fr webtalk* xelab* xim* xvhdl*
