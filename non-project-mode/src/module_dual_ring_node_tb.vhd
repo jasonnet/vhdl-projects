@@ -9,10 +9,10 @@ use std.env.finish;
 use std.textio.all;             -- provides  file_open, line
 use ieee.std_logic_textio.all;  -- provides write of std_logic_vector
  
-entity module_cluster_tb is
-end module_cluster_tb;
+entity module_dual_ring_node_tb is
+end module_dual_ring_node_tb;
  
-architecture behave of module_cluster_tb is
+architecture behave of module_dual_ring_node_tb is
  
   constant c_DEPTH    : integer := 4;
   constant c_WIDTH    : integer := 8;
@@ -33,7 +33,7 @@ architecture behave of module_cluster_tb is
   signal clocktick_count : integer := 0;   -- count of clock ticks for logging
   file output_buf : text; -- text is keyword
    
-  component module_cluster is
+  component module_dual_ring_node is
     generic (
       g_WIDTH    : natural := 8;
       g_DEPTH    : integer := 32;
@@ -56,12 +56,12 @@ architecture behave of module_cluster_tb is
 		o_fw_ae      : out std_logic;
 		o_fw_empty   : out std_logic
       );
-  end component module_cluster;
+  end component module_dual_ring_node;
  
    
 begin
  
-  module_cluster_INST : module_cluster
+  module_dual_ring_node_INST : module_dual_ring_node
     generic map (
       g_WIDTH    => c_WIDTH,
       g_DEPTH    => c_DEPTH,

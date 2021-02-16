@@ -6,7 +6,7 @@ library ieee;
 use ieee.std_logic_1164.all;
 --use ieee.numeric_std.all;
  
-entity module_cluster is
+entity module_dual_ring_node is
   generic (
     g_WIDTH    : natural := 8;
     g_DEPTH    : integer := 32;
@@ -29,9 +29,9 @@ entity module_cluster is
     o_fw_ae      : out std_logic;
     o_fw_empty   : out std_logic
     );
-end module_cluster;
+end module_dual_ring_node;
  
-architecture behave of module_cluster is
+architecture behave of module_dual_ring_node is
  
   --constant c_DEPTH    : integer := 4;
   --constant c_WIDTH    : integer := 8;
