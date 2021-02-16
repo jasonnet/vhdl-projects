@@ -6,6 +6,8 @@ library ieee;
 use ieee.std_logic_1164.all;
 use ieee.numeric_std.all;
 use std.env.finish;
+use std.textio.all;             -- provides  file_open, line
+use ieee.std_logic_textio.all;  -- provides write of std_logic_vector
  
 entity module_fifo_regs_with_flags_tb is
 end module_fifo_regs_with_flags_tb;
@@ -28,6 +30,9 @@ architecture behave of module_fifo_regs_with_flags_tb is
   signal w_AE      : std_logic;
   signal w_EMPTY   : std_logic;
    
+  signal clocktick_count : integer := 0;   -- count of clock ticks for logging
+  file output_buf : text; -- text is keyword
+
   component module_fifo_regs_with_flags is
     generic (
       g_WIDTH    : natural := 8;
@@ -77,46 +82,88 @@ begin
       );
  
   r_CLOCK <= not r_CLOCK after 5 ns;
+
+    file_open(output_buf, "logs/sim.writeout", write_mode);
+    process is
+        variable write_col_to_output_buf : line; -- line is keyword
+    begin
+        loop
+            wait until r_CLOCK = '1';
+            wait for 100ps; -- above this line, the tick changes might not have kicked in.  Below it they should have.
+            
+            write(write_col_to_output_buf, clocktick_count,right,5);
+
+            -- log tick outputs            
+            write(write_col_to_output_buf, string'(", AF:"));
+            write(write_col_to_output_buf, w_AF, right);
+            write(write_col_to_output_buf, string'(", FULL:"));
+            write(write_col_to_output_buf, w_FULL, right);
+            write(write_col_to_output_buf, string'(", AE:"));
+            write(write_col_to_output_buf, w_AE, right);
+            write(write_col_to_output_buf, string'(", EMPTY:"));
+            write(write_col_to_output_buf, w_EMPTY, right);
+            write(write_col_to_output_buf, string'(", OUT:"));
+            write(write_col_to_output_buf, w_RD_DATA, right);
+            writeline(output_buf, write_col_to_output_buf);
+
+            wait for 100ps;
+            
+            -- log new inputs
+            write(write_col_to_output_buf, string'("                                                "));
+            write(write_col_to_output_buf, string'(", WR_EN:"));
+            write(write_col_to_output_buf, r_WR_EN, right);
+            write(write_col_to_output_buf, string'(", RD_EN:"));
+            write(write_col_to_output_buf, r_RD_EN, right);
+            write(write_col_to_output_buf, string'(", WR_DATA:"));
+            write(write_col_to_output_buf, r_WR_DATA, right);
+            writeline(output_buf, write_col_to_output_buf);
+
+            if (r_CLOCK = '1') then
+              clocktick_count <= clocktick_count + 1;
+            end if;
+        end loop;
+    end process;
+  
  
   p_TEST : process is
   begin
     wait until r_CLOCK = '1';
-    r_WR_EN <= '1';
+    r_WR_EN <= '1'; r_WR_DATA <= X"A6";
+    wait until r_CLOCK = '1';
+    wait until r_CLOCK = '1';  
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
-    r_WR_EN <= '0';
+    r_WR_EN <= '0'; r_WR_DATA <= X"A7";
     r_RD_EN <= '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     r_RD_EN <= '0';
-    r_WR_EN <= '1';
+    r_WR_EN <= '1'; r_WR_DATA <= X"A7";
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-    r_RD_EN <= '1';
-    wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
+    r_RD_EN <= '1'; r_WR_DATA <= X"A8";
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-    r_WR_EN <= '0';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-	-- commenting the following two out because testing for underflow or overflow triggers out Failure response and we're prefer not to error out.
+    wait until r_CLOCK = '1';
+    r_WR_EN <= '0';  r_WR_DATA <= X"A9";
+    wait until r_CLOCK = '1';
+    wait until r_CLOCK = '1';
+    -- commenting the following two out because testing for underflow or overflow triggers out Failure response and we're prefer not to error out.
     --wait until r_CLOCK = '1';
     --wait until r_CLOCK = '1';
 
-	-- wait;
-	--or 
+    -- wait;
+    --or 
     -- assert false report "end of test bench" severity failure;
-	--or
-	finish;
+    --or
+    finish;
  
   end process;
    

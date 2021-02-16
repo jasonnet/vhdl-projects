@@ -5,6 +5,12 @@ do
 	if [[ "$readline" == "Error: "* ]] ; then
 		echo "$readline"
 		EXIT_CODE=1
+	elif [[ "$readline" == "ERROR: "* ]] ; then
+		echo "$readline"
+		EXIT_CODE=1
+	elif [[ "$readline" == "FATAL_ERROR: "* ]] ; then
+		echo "$readline"
+		EXIT_CODE=1
 	elif [[ "$readline" == "Failure: "* ]] ; then
 		echo "$readline"
 		EXIT_CODE=1

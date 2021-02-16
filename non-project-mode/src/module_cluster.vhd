@@ -94,7 +94,7 @@ begin
       i_clk      => i_clk, --CLOCK,
       i_wr_en    => i_wr_en, --r_WR_EN,
       i_wr_data  => i_wr_data, --r_WR_DATA,
-      --o_af       => w_AF,
+      o_af       => o_af,
       o_full     => o_full, --w_FULL,
       i_rd_en    => r_DO_XFER_S00_D01,
       o_rd_data  => r_DATA_S00_D01,
@@ -118,7 +118,7 @@ begin
       o_full     => r_FIFO_NODE01S00D01_FULL,
       i_rd_en    => i_rd_en, --r_RD_EN,
       o_rd_data  => o_rd_data, --w_RD_DATA,
-      --o_ae       => w_AE,
+      o_ae       => o_ae,
       o_empty    => o_empty --w_EMPTY
       );
  
