@@ -41,20 +41,20 @@ architecture behave of module_cluster_tb is
       g_AE_LEVEL : integer := 4
       );
     port (
-      i_rst_sync : in std_logic;
-      i_clk      : in std_logic;
- 
-      -- FIFO Write Interface
-      i_wr_en   : in  std_logic;
-      i_wr_data : in  std_logic_vector(g_WIDTH-1 downto 0);
-      o_af      : out std_logic;
-      o_full    : out std_logic;
- 
-      -- FIFO Read Interface
-      i_rd_en   : in  std_logic;
-      o_rd_data : out std_logic_vector(g_WIDTH-1 downto 0);
-      o_ae      : out std_logic;
-      o_empty   : out std_logic
+		i_rst_sync : in std_logic;
+		i_clk      : in std_logic;
+	 
+		-- Forward FIFO Write Interface
+		i_fw_wr_en   : in  std_logic;
+		i_fw_wr_data : in  std_logic_vector(g_WIDTH-1 downto 0);
+		o_fw_af      : out std_logic;
+		o_fw_full    : out std_logic;
+	 
+		-- Forward FIFO Read Interface
+		i_fw_rd_en   : in  std_logic;
+		o_fw_rd_data : out std_logic_vector(g_WIDTH-1 downto 0);
+		o_fw_ae      : out std_logic;
+		o_fw_empty   : out std_logic
       );
   end component module_cluster;
  
@@ -71,14 +71,14 @@ begin
     port map (
       i_rst_sync => r_RESET,
       i_clk      => r_CLOCK,
-      i_wr_en    => r_WR_EN,
-      i_wr_data  => r_WR_DATA,
-      o_af       => w_AF,
-      o_full     => w_FULL,
-      i_rd_en    => r_RD_EN,
-      o_rd_data  => w_RD_DATA,
-      o_ae       => w_AE,
-      o_empty    => w_EMPTY
+      i_fw_wr_en    => r_WR_EN,
+      i_fw_wr_data  => r_WR_DATA,
+      o_fw_af       => w_AF,
+      o_fw_full     => w_FULL,
+      i_fw_rd_en    => r_RD_EN,
+      o_fw_rd_data  => w_RD_DATA,
+      o_fw_ae       => w_AE,
+      o_fw_empty    => w_EMPTY
       );
  
   
@@ -141,19 +141,19 @@ begin
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     r_RD_EN <= '0';
-    r_WR_EN <= '1'; r_WR_DATA <= X"A7";
+    r_WR_EN <= '1'; r_WR_DATA <= X"A8";
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-    r_RD_EN <= '1'; r_WR_DATA <= X"A8";
-    wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
-    wait until r_CLOCK = '1';
+    r_RD_EN <= '1'; r_WR_DATA <= X"A9";
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
-    r_WR_EN <= '0';  r_WR_DATA <= X"A9";
+    wait until r_CLOCK = '1';
+    wait until r_CLOCK = '1';
+    wait until r_CLOCK = '1';
+    r_WR_EN <= '0';  r_WR_DATA <= X"AA";
     wait until r_CLOCK = '1';
     wait until r_CLOCK = '1';
     -- commenting the following two out because testing for underflow or overflow triggers out Failure response and we're prefer not to error out.
